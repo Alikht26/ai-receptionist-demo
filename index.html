@@ -13,7 +13,7 @@
   .card { background: #1e293b; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
   .card h3 { margin: 0 0 8px; font-size: .95rem; color: #cbd5e1; }
   label { display: block; font-size: .8rem; color: #94a3b8; margin: 8px 0 4px; }
-  input[type=password], select, textarea {
+  input[type=password], input[type=text], select, textarea {
     width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155;
     background: #0f172a; color: #e2e8f0; font-size: .9rem; }
   textarea { min-height: 90px; resize: vertical; }
@@ -39,14 +39,18 @@
 <body>
 
 <h1>🎙️ AI Receptionist — Live Demo</h1>
-<div class="sub">Phase 0: Deepgram (sunna/bolna) + Gemini (dimagh). Phone line ke baghair browser demo.</div>
+<div class="sub">Phase 0: Deepgram (sunna/bolna) + Groq (dimagh). Phone line ke baghair browser demo.</div>
 
 <div class="card">
   <h3>Step 1 — API Keys</h3>
   <label>Deepgram API Key</label>
   <input type="password" id="dgKey" placeholder="deepgram.com → API Keys se banao" autocomplete="off">
-  <label>Gemini API Key</label>
-  <input type="password" id="gmKey" placeholder="aistudio.google.com → Get API Key (free)" autocomplete="off">
+  <label>LLM API Key (Groq — free, card nahi chahiye)</label>
+  <input type="password" id="llmKey" placeholder="console.groq.com → API Keys se banao" autocomplete="off">
+  <label>LLM Base URL (default theek hai)</label>
+  <input type="text" id="llmBase" value="https://api.groq.com/openai/v1" autocomplete="off">
+  <label>LLM Model (default theek hai)</label>
+  <input type="text" id="llmModel" value="llama-3.3-70b-versatile" autocomplete="off">
   <button class="btn" id="saveBtn">Save Keys</button>
   <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
 </div>
@@ -78,7 +82,7 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const LS_DG = 'airec_dgkey', LS_GM = 'airec_gmkey';
+const LS_DG = 'airec_dgkey', LS_LLM = 'airec_llmkey';
 
 const PRESETS = {
   salon: "You are Sara, the friendly receptionist of 'Glow Studio' salon. Timings: Mon-Sat 10am-8pm, Sunday closed. Services: haircut $15, facial $25, hair color $40. When someone wants a booking, ask their name, service, day and time, then confirm it warmly. Keep every reply under 35 words, natural and conversational. Never mention you are AI.",
@@ -100,21 +104,21 @@ function addMsg(who, text) {
 
 // init
 $('dgKey').value = localStorage.getItem(LS_DG) || '';
-$('gmKey').value = localStorage.getItem(LS_GM) || '';
+$('llmKey').value = localStorage.getItem(LS_LLM) || '';
 $('sysPrompt').value = PRESETS.salon;
 $('preset').addEventListener('change', e => { $('sysPrompt').value = PRESETS[e.target.value]; history = []; });
 $('saveBtn').addEventListener('click', () => {
   localStorage.setItem(LS_DG, $('dgKey').value.trim());
-  localStorage.setItem(LS_GM, $('gmKey').value.trim());
+  localStorage.setItem(LS_LLM, $('llmKey').value.trim());
   status('Keys save ho gayin. Ab mic dabao aur bolo.');
 });
-if ($('dgKey').value && $('gmKey').value) status('Keys loaded hain. Mic dabao aur bolo.');
+if ($('dgKey').value && $('llmKey').value) status('Keys loaded hain. Mic dabao aur bolo.');
 
 $('micBtn').addEventListener('click', () => { recording ? stopRec() : startRec(); });
 
 async function startRec() {
-  const dg = localStorage.getItem(LS_DG), gm = localStorage.getItem(LS_GM);
-  if (!dg || !gm) { status('Pehle dono API keys save karo.'); return; }
+  const dg = localStorage.getItem(LS_DG), llm = localStorage.getItem(LS_LLM);
+  if (!dg || !llm) { status('Pehle dono API keys save karo.'); return; }
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mimes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', ''];
@@ -176,25 +180,24 @@ async function stt(blob) {
 }
 
 async function think() {
-  const gm = localStorage.getItem(LS_GM);
+  const key = localStorage.getItem(LS_LLM);
+  const base = ($('llmBase').value.trim() || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
+  const model = $('llmModel').value.trim() || 'llama-3.3-70b-versatile';
   const sys = $('sysPrompt').value.trim();
-  const contents = history.slice(-8).map(h => ({
-    role: h.role === 'user' ? 'user' : 'model',
-    parts: [{ text: h.text }]
+  const messages = [{ role: 'system', content: sys }];
+  history.slice(-8).forEach(h => messages.push({
+    role: h.role === 'user' ? 'user' : 'assistant',
+    content: h.text
   }));
-  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(gm), {
+  const r = await fetch(base + '/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: sys }] },
-      contents,
-      generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
-    })
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body: JSON.stringify({ model, messages, max_tokens: 120, temperature: 0.7 })
   });
-  if (!r.ok) throw new Error(r.status === 400 ? 'Gemini key ghalat hai.' : 'Gemini error ' + r.status);
+  if (!r.ok) throw new Error(r.status === 401 ? 'LLM key ghalat hai.' : 'LLM error ' + r.status);
   const j = await r.json();
-  const parts = ((((j.candidates || [])[0] || {}).content || {}).parts) || [];
-  return (parts[0] || {}).text ? parts[0].text.trim() : 'Maaf kijiye, samajh nahi aaya.';
+  const t = (((j.choices || [])[0] || {}).message || {}).content;
+  return (t || '').trim() || 'Maaf kijiye, samajh nahi aaya.';
 }
 
 async function speak(text) {

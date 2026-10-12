@@ -49,8 +49,9 @@
   <input type="password" id="llmKey" placeholder="console.groq.com → API Keys se banao" autocomplete="off">
   <label>LLM Base URL (default theek hai)</label>
   <input type="text" id="llmBase" value="https://api.groq.com/openai/v1" autocomplete="off">
-  <label>LLM Model (default theek hai)</label>
-  <input type="text" id="llmModel" value="llama-3.1-8b-instant" autocomplete="off">
+  <label>LLM Model (Save dabao — list khud load hogi)</label>
+  <select id="llmModel"><option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option></select>
+  <div class="hint" id="modelHint" style="text-align:left;margin-top:4px;"></div>
   <button class="btn" id="saveBtn">Save Keys</button>
   <span id="saveMsg" style="color:#4ade80;font-size:.85rem;margin-left:10px;"></span>
   <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
@@ -83,7 +84,7 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const LS_DG = 'airec_dgkey', LS_LLM = 'airec_llmkey';
+const LS_DG = 'airec_dgkey', LS_LLM = 'airec_llmkey', LS_LLM_MODEL = 'airec_llmmodel';
 
 const PRESETS = {
   salon: "You are Sara, the friendly receptionist of 'Glow Studio' salon. Timings: Mon-Sat 10am-8pm, Sunday closed. Services: haircut $15, facial $25, hair color $40. When someone wants a booking, ask their name, service, day and time, then confirm it warmly. Keep every reply under 35 words, natural and conversational. Never mention you are AI.",
@@ -108,16 +109,48 @@ $('dgKey').value = localStorage.getItem(LS_DG) || '';
 $('llmKey').value = localStorage.getItem(LS_LLM) || '';
 $('sysPrompt').value = PRESETS.salon;
 $('preset').addEventListener('change', e => { $('sysPrompt').value = PRESETS[e.target.value]; history = []; });
-$('saveBtn').addEventListener('click', () => {
+async function loadModels() {
+  const key = localStorage.getItem(LS_LLM);
+  const base = ($('llmBase').value.trim() || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
+  const sel = $('llmModel'), hint = $('modelHint');
+  if (!key) return;
+  hint.textContent = 'Models load ho rahe hain…';
+  try {
+    const r = await fetch(base + '/models', { headers: { 'Authorization': 'Bearer ' + key } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    const ids = (j.data || []).map(m => m.id)
+      .filter(id => !/whisper|tts|transcribe|image|audio/i.test(id)).sort();
+    if (!ids.length) throw new Error('koi chat model nahi mila');
+    sel.innerHTML = '';
+    ids.forEach(id => {
+      const o = document.createElement('option');
+      o.value = id; o.textContent = id;
+      sel.appendChild(o);
+    });
+    const saved = localStorage.getItem(LS_LLM_MODEL);
+    const pref = (saved && ids.includes(saved)) ? saved
+      : (ids.find(id => /gpt-oss-20b/i.test(id)) || ids.find(id => /llama/i.test(id)) || ids[0]);
+    sel.value = pref;
+    hint.textContent = '✓ ' + ids.length + ' models mile. Jo theek lage select karo.';
+  } catch (e) {
+    hint.textContent = '⚠ List load nahi hui (' + e.message + '). Neeche wala default model try karo.';
+  }
+}
+$('llmModel').addEventListener('change', e => localStorage.setItem(LS_LLM_MODEL, e.target.value));
+$('saveBtn').addEventListener('click', async () => {
   const dg = $('dgKey').value.trim(), llm = $('llmKey').value.trim();
   if (!dg || !llm) { $('saveMsg').textContent = '⚠ Pehle dono keys dalo.'; $('saveMsg').style.color = '#fbbf24'; return; }
   localStorage.setItem(LS_DG, dg);
   localStorage.setItem(LS_LLM, llm);
+  localStorage.setItem(LS_LLM_MODEL, $('llmModel').value);
   $('saveMsg').textContent = '✓ Save ho gayin!';
   $('saveMsg').style.color = '#4ade80';
-  status('Keys save ho gayin. Ab mic dabao aur bolo.');
+  status('Keys save ho gayin. Models load ho rahe hain…');
+  await loadModels();
+  status('Taiyar! Mic dabao aur bolo.');
 });
-if ($('dgKey').value && $('llmKey').value) status('Keys loaded hain. Mic dabao aur bolo.');
+if ($('dgKey').value && $('llmKey').value) { status('Keys loaded hain. Models load ho rahe hain…'); loadModels().then(() => status('Taiyar! Mic dabao aur bolo.')); }
 
 $('micBtn').addEventListener('click', () => { recording ? stopRec() : startRec(); });
 
@@ -187,7 +220,7 @@ async function stt(blob) {
 async function think() {
   const key = localStorage.getItem(LS_LLM);
   const base = ($('llmBase').value.trim() || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
-  const model = $('llmModel').value.trim() || 'llama-3.1-8b-instant';
+  const model = $('llmModel').value.trim() || 'openai/gpt-oss-20b';
   const sys = $('sysPrompt').value.trim();
   const messages = [{ role: 'system', content: sys }];
   history.slice(-8).forEach(h => messages.push({

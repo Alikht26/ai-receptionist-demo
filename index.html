@@ -52,6 +52,7 @@
   <label>LLM Model (default theek hai)</label>
   <input type="text" id="llmModel" value="llama-3.3-70b-versatile" autocomplete="off">
   <button class="btn" id="saveBtn">Save Keys</button>
+  <span id="saveMsg" style="color:#4ade80;font-size:.85rem;margin-left:10px;"></span>
   <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
 </div>
 
@@ -108,8 +109,12 @@ $('llmKey').value = localStorage.getItem(LS_LLM) || '';
 $('sysPrompt').value = PRESETS.salon;
 $('preset').addEventListener('change', e => { $('sysPrompt').value = PRESETS[e.target.value]; history = []; });
 $('saveBtn').addEventListener('click', () => {
-  localStorage.setItem(LS_DG, $('dgKey').value.trim());
-  localStorage.setItem(LS_LLM, $('llmKey').value.trim());
+  const dg = $('dgKey').value.trim(), llm = $('llmKey').value.trim();
+  if (!dg || !llm) { $('saveMsg').textContent = '⚠ Pehle dono keys dalo.'; $('saveMsg').style.color = '#fbbf24'; return; }
+  localStorage.setItem(LS_DG, dg);
+  localStorage.setItem(LS_LLM, llm);
+  $('saveMsg').textContent = '✓ Save ho gayin!';
+  $('saveMsg').style.color = '#4ade80';
   status('Keys save ho gayin. Ab mic dabao aur bolo.');
 });
 if ($('dgKey').value && $('llmKey').value) status('Keys loaded hain. Mic dabao aur bolo.');

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Receptionist — Live Demo (Phase 0)</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 16px;
+         background: #0f172a; color: #e2e8f0; max-width: 640px; margin-inline: auto; }
+  h1 { font-size: 1.3rem; margin: 8px 0 2px; }
+  .sub { color: #94a3b8; font-size: .85rem; margin-bottom: 16px; }
+  .card { background: #1e293b; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .card h3 { margin: 0 0 8px; font-size: .95rem; color: #cbd5e1; }
+  label { display: block; font-size: .8rem; color: #94a3b8; margin: 8px 0 4px; }
+  input[type=password], select, textarea {
+    width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155;
+    background: #0f172a; color: #e2e8f0; font-size: .9rem; }
+  textarea { min-height: 90px; resize: vertical; }
+  button { cursor: pointer; }
+  .btn { background: #2563eb; color: #fff; border: 0; border-radius: 8px;
+         padding: 10px 16px; font-size: .9rem; margin-top: 10px; }
+  .btn:disabled { opacity: .5; }
+  .mic-wrap { text-align: center; padding: 8px 0 4px; }
+  #micBtn { width: 96px; height: 96px; border-radius: 50%; border: 0; font-size: 2.2rem;
+            background: #2563eb; color: #fff; }
+  #micBtn.rec { background: #dc2626; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 50% { transform: scale(1.08); } }
+  #status { text-align: center; min-height: 1.6em; color: #fbbf24; font-size: .9rem; margin: 8px 0; }
+  #log { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+  .msg { padding: 10px 12px; border-radius: 10px; font-size: .9rem; line-height: 1.45; }
+  .msg.you { background: #1d4ed8; align-self: flex-end; max-width: 85%; }
+  .msg.agent { background: #334155; align-self: flex-start; max-width: 85%; }
+  .hint { font-size: .8rem; color: #64748b; text-align: center; margin-top: 6px; }
+  .note { font-size: .75rem; color: #64748b; margin-top: 8px; }
+  #playBtn { display: none; background: #059669; }
+</style>
+</head>
+<body>
+
+<h1>🎙️ AI Receptionist — Live Demo</h1>
+<div class="sub">Phase 0: Deepgram (sunna/bolna) + Gemini (dimagh). Phone line ke baghair browser demo.</div>
+
+<div class="card">
+  <h3>Step 1 — API Keys</h3>
+  <label>Deepgram API Key</label>
+  <input type="password" id="dgKey" placeholder="deepgram.com → API Keys se banao" autocomplete="off">
+  <label>Gemini API Key</label>
+  <input type="password" id="gmKey" placeholder="aistudio.google.com → Get API Key (free)" autocomplete="off">
+  <button class="btn" id="saveBtn">Save Keys</button>
+  <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
+</div>
+
+<div class="card">
+  <h3>Step 2 — Agent ka kirdaar</h3>
+  <label>Business type</label>
+  <select id="preset">
+    <option value="salon">Salon — Glow Studio</option>
+    <option value="clinic">Clinic — CityCare</option>
+    <option value="plumber">Plumber — FixIt</option>
+  </select>
+  <label>Instructions (edit kar sakte ho)</label>
+  <textarea id="sysPrompt"></textarea>
+</div>
+
+<div class="card">
+  <h3>Step 3 — Baat karo</h3>
+  <div class="mic-wrap"><button id="micBtn">🎤</button></div>
+  <div id="status">Keys save karo, phir mic dabao aur bolo.</div>
+  <div style="text-align:center"><button class="btn" id="playBtn">🔊 Jawab suno</button></div>
+  <div class="hint">Try: "I want to book a haircut tomorrow at 5pm"</div>
+</div>
+
+<div class="card">
+  <h3>Ghuftagu</h3>
+  <div id="log"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const LS_DG = 'airec_dgkey', LS_GM = 'airec_gmkey';
+
+const PRESETS = {
+  salon: "You are Sara, the friendly receptionist of 'Glow Studio' salon. Timings: Mon-Sat 10am-8pm, Sunday closed. Services: haircut $15, facial $25, hair color $40. When someone wants a booking, ask their name, service, day and time, then confirm it warmly. Keep every reply under 35 words, natural and conversational. Never mention you are AI.",
+  clinic: "You are Ali, the receptionist of 'CityCare Clinic'. Doctor available Mon-Fri 5pm-9pm. Appointment fee $20. Ask patient name, health issue and preferred day, then confirm. Keep every reply under 35 words, polite and calm. Never mention you are AI.",
+  plumber: "You are Bilal from 'FixIt Plumbing'. Visit charge $30 plus parts. Ask what the problem is, which area they live in, and preferred time, then confirm the visit. Keep every reply under 35 words, friendly. Never mention you are AI."
+};
+
+let recording = false, mediaRecorder = null, audioChunks = [];
+let history = []; // {role:'user'|'model', text}
+
+function status(t) { $('status').textContent = t; }
+function addMsg(who, text) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = (who === 'you' ? '🧑 ' : '🤖 ') + text;
+  $('log').appendChild(d);
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+// init
+$('dgKey').value = localStorage.getItem(LS_DG) || '';
+$('gmKey').value = localStorage.getItem(LS_GM) || '';
+$('sysPrompt').value = PRESETS.salon;
+$('preset').addEventListener('change', e => { $('sysPrompt').value = PRESETS[e.target.value]; history = []; });
+$('saveBtn').addEventListener('click', () => {
+  localStorage.setItem(LS_DG, $('dgKey').value.trim());
+  localStorage.setItem(LS_GM, $('gmKey').value.trim());
+  status('Keys save ho gayin. Ab mic dabao aur bolo.');
+});
+if ($('dgKey').value && $('gmKey').value) status('Keys loaded hain. Mic dabao aur bolo.');
+
+$('micBtn').addEventListener('click', () => { recording ? stopRec() : startRec(); });
+
+async function startRec() {
+  const dg = localStorage.getItem(LS_DG), gm = localStorage.getItem(LS_GM);
+  if (!dg || !gm) { status('Pehle dono API keys save karo.'); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', ''];
+    const mime = mimes.find(m => !m || MediaRecorder.isTypeSupported(m)) || '';
+    audioChunks = [];
+    mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data.size) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => { stream.getTracks().forEach(t => t.stop()); processAudio(); };
+    mediaRecorder.start();
+    recording = true;
+    $('micBtn').classList.add('rec');
+    status('Sun raha hoon… dobara dabao jab baat khatam ho.');
+  } catch (e) {
+    status('Mic ki permission nahi mili. Browser settings mein allow karo.');
+  }
+}
+
+function stopRec() {
+  recording = false;
+  $('micBtn').classList.remove('rec');
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  status('Ruko…');
+}
+
+async function processAudio() {
+  const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+  if (!blob.size) { status('Kuch record nahi hua. Dobara try karo.'); return; }
+  try {
+    status('Samajh raha hoon…');
+    const transcript = await stt(blob);
+    if (!transcript) { status('Kuch sunai nahi diya — thoda zor se bolo aur dobara try karo.'); return; }
+    addMsg('you', transcript);
+    history.push({ role: 'user', text: transcript });
+
+    status('Jawab soch raha hoon…');
+    const reply = await think();
+    addMsg('agent', reply);
+    history.push({ role: 'model', text: reply });
+
+    status('Bol raha hoon…');
+    await speak(reply);
+    status('Ho gaya! Mic dabao aur agla sawal poocho.');
+  } catch (e) {
+    status('Error: ' + e.message);
+  }
+}
+
+async function stt(blob) {
+  const dg = localStorage.getItem(LS_DG);
+  const r = await fetch('https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&language=en', {
+    method: 'POST',
+    headers: { 'Authorization': 'Token ' + dg, 'Content-Type': blob.type || 'audio/webm' },
+    body: blob
+  });
+  if (!r.ok) throw new Error(r.status === 401 ? 'Deepgram key ghalat hai.' : 'Deepgram STT error ' + r.status);
+  const j = await r.json();
+  const alts = (((j.results || {}).channels || [])[0] || {}).alternatives || [];
+  return (alts[0] || {}).transcript || '';
+}
+
+async function think() {
+  const gm = localStorage.getItem(LS_GM);
+  const sys = $('sysPrompt').value.trim();
+  const contents = history.slice(-8).map(h => ({
+    role: h.role === 'user' ? 'user' : 'model',
+    parts: [{ text: h.text }]
+  }));
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(gm), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: sys }] },
+      contents,
+      generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
+    })
+  });
+  if (!r.ok) throw new Error(r.status === 400 ? 'Gemini key ghalat hai.' : 'Gemini error ' + r.status);
+  const j = await r.json();
+  const parts = ((((j.candidates || [])[0] || {}).content || {}).parts) || [];
+  return (parts[0] || {}).text ? parts[0].text.trim() : 'Maaf kijiye, samajh nahi aaya.';
+}
+
+async function speak(text) {
+  const dg = localStorage.getItem(LS_DG);
+  const r = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
+    method: 'POST',
+    headers: { 'Authorization': 'Token ' + dg, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text })
+  });
+  if (!r.ok) throw new Error(r.status === 401 ? 'Deepgram key ghalat hai.' : 'Deepgram TTS error ' + r.status);
+  const buf = await r.arrayBuffer();
+  const url = URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' }));
+  const audio = new Audio(url);
+  try {
+    await audio.play();
+  } catch (e) {
+    const pb = $('playBtn');
+    pb.style.display = 'inline-block';
+    pb.onclick = () => { audio.play(); pb.style.display = 'none'; };
+    status('Play dabao taake jawab sun sako.');
+  }
+}
+</script>
+</body>
+</html>

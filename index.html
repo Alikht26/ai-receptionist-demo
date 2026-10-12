@@ -52,6 +52,12 @@
   <label>LLM Model (Save dabao — list khud load hogi)</label>
   <select id="llmModel"><option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option></select>
   <div class="hint" id="modelHint" style="text-align:left;margin-top:4px;"></div>
+  <label>AI ki awaz (voice) — ek-ek kar ke suno</label>
+  <select id="ttsVoice"></select>
+  <div class="hint" style="text-align:left;margin-top:4px;">
+    <button class="btn ghost" id="testVoice" style="padding:6px 14px;font-size:.85rem;">🔊 Awaz suno</button>
+    <span style="margin-left:8px;">Jo sab se human-like lage, wahi rakho.</span>
+  </div>
   <button class="btn" id="saveBtn">Save Keys</button>
   <span id="saveMsg" style="color:#4ade80;font-size:.85rem;margin-left:10px;"></span>
   <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
@@ -84,7 +90,19 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const LS_DG = 'airec_dgkey', LS_LLM = 'airec_llmkey', LS_LLM_MODEL = 'airec_llmmodel';
+const LS_DG = 'airec_dgkey', LS_LLM = 'airec_llmkey', LS_LLM_MODEL = 'airec_llmmodel', LS_VOICE = 'airec_ttsvoice';
+const VOICES = [
+  ['aura-2-thalia-en', 'Thalia — female'],
+  ['aura-2-andromeda-en', 'Andromeda — female'],
+  ['aura-2-helena-en', 'Helena — female'],
+  ['aura-2-luna-en', 'Luna — female'],
+  ['aura-2-amalthea-en', 'Amalthea — female'],
+  ['aura-2-apollo-en', 'Apollo — male'],
+  ['aura-2-arcas-en', 'Arcas — male'],
+  ['aura-2-atlas-en', 'Atlas — male'],
+  ['aura-2-orion-en', 'Orion — male'],
+  ['aura-2-aries-en', 'Aries — male'],
+];
 
 const PRESETS = {
   salon: "You are Sara, the friendly receptionist of 'Glow Studio' salon. Timings: Mon-Sat 10am-8pm, Sunday closed. Services: haircut $15, facial $25, hair color $40. When someone wants a booking, ask their name, service, day and time, then confirm it warmly. Keep every reply under 35 words, natural and conversational. Never mention you are AI.",
@@ -138,6 +156,20 @@ async function loadModels() {
   }
 }
 $('llmModel').addEventListener('change', e => localStorage.setItem(LS_LLM_MODEL, e.target.value));
+// voice dropdown
+(function initVoices() {
+  const sel = $('ttsVoice');
+  VOICES.forEach(([id, label]) => {
+    const o = document.createElement('option');
+    o.value = id; o.textContent = label;
+    sel.appendChild(o);
+  });
+  sel.value = localStorage.getItem(LS_VOICE) || 'aura-2-thalia-en';
+  sel.addEventListener('change', e => localStorage.setItem(LS_VOICE, e.target.value));
+})();
+$('testVoice').addEventListener('click', () => {
+  speak("Hi! Thanks for calling Glow Studio. How can I help you today?");
+});
 $('saveBtn').addEventListener('click', async () => {
   const dg = $('dgKey').value.trim(), llm = $('llmKey').value.trim();
   if (!dg || !llm) { $('saveMsg').textContent = '⚠ Pehle dono keys dalo.'; $('saveMsg').style.color = '#fbbf24'; return; }
@@ -261,7 +293,8 @@ async function think() {
 
 async function speak(text) {
   const dg = localStorage.getItem(LS_DG);
-  const r = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
+  const voice = localStorage.getItem(LS_VOICE) || 'aura-2-thalia-en';
+  const r = await fetch('https://api.deepgram.com/v1/speak?model=' + encodeURIComponent(voice), {
     method: 'POST',
     headers: { 'Authorization': 'Token ' + dg, 'Content-Type': 'application/json' },
     body: JSON.stringify({ text })

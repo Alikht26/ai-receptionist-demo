@@ -50,7 +50,7 @@
   <label>LLM Base URL (default theek hai)</label>
   <input type="text" id="llmBase" value="https://api.groq.com/openai/v1" autocomplete="off">
   <label>LLM Model (default theek hai)</label>
-  <input type="text" id="llmModel" value="llama-3.3-70b-versatile" autocomplete="off">
+  <input type="text" id="llmModel" value="llama-3.1-8b-instant" autocomplete="off">
   <button class="btn" id="saveBtn">Save Keys</button>
   <span id="saveMsg" style="color:#4ade80;font-size:.85rem;margin-left:10px;"></span>
   <div class="note">Keys sirf isi browser mein save hoti hain (localStorage). Kahin bheji nahi jatin.</div>
@@ -187,7 +187,7 @@ async function stt(blob) {
 async function think() {
   const key = localStorage.getItem(LS_LLM);
   const base = ($('llmBase').value.trim() || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
-  const model = $('llmModel').value.trim() || 'llama-3.3-70b-versatile';
+  const model = $('llmModel').value.trim() || 'llama-3.1-8b-instant';
   const sys = $('sysPrompt').value.trim();
   const messages = [{ role: 'system', content: sys }];
   history.slice(-8).forEach(h => messages.push({
@@ -199,7 +199,11 @@ async function think() {
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
     body: JSON.stringify({ model, messages, max_tokens: 120, temperature: 0.7 })
   });
-  if (!r.ok) throw new Error(r.status === 401 ? 'LLM key ghalat hai.' : 'LLM error ' + r.status);
+  if (!r.ok) {
+    if (r.status === 401) throw new Error('LLM key ghalat hai.');
+    if (r.status === 404) throw new Error('Model nahi mila (404) — Groq ne model ka naam badal diya hai. console.groq.com → Docs mein current model list dekho aur Model wale khane mein sahi naam likho.');
+    throw new Error('LLM error ' + r.status);
+  }
   const j = await r.json();
   const t = (((j.choices || [])[0] || {}).message || {}).content;
   return (t || '').trim() || 'Maaf kijiye, samajh nahi aaya.';

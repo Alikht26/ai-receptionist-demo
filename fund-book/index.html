@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>برادری باہمی امداد فنڈ بک — Fund Book v16</title>
+<title>برادری باہمی امداد فنڈ بک — Fund Book v17</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -42,6 +42,9 @@ header{padding:20px 16px 4px;text-align:center}header h1{font-family:"Playfair D
 .cover .quote .urdu{font-family:"Noto Nastaliq Urdu",serif;font-size:11px;line-height:1.9;color:#59461a}
 .cover .quote .source{font-size:9px;letter-spacing:.4px;color:#8a744a;margin-top:1px}
 
+.bookpage.rules{border:2px solid var(--gold);box-shadow:0 18px 45px rgba(120,90,20,.18), inset 0 0 0 5px #fffef9, inset 0 0 0 7px #dcc38c}
+.ruleslist{font-family:'Noto Nastaliq Urdu',serif;font-size:16px;line-height:2.3;text-align:right;padding:0 24px 0 6px;margin:6px 0 4px;color:#26301f}
+.ruleslist li{margin-bottom:9px}
 /* PAGES — reference image style */
 .bookpage{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 45px rgba(120,90,20,.18);padding:18px 14px 14px;transform-origin:left center}
 .bookpage.flipIn{animation:flipIn .7s cubic-bezier(.3,0,.2,1)}
@@ -145,6 +148,28 @@ table.fit td.cell{font-size:7.5px}
   <p class="note">Har saal ki apni kitaab hai — <b>2026 se 2030</b> tak. Jis saal ki kitaab kholni hai us par tap karein — safha <b>book ki tarah flip</b> hokar khulega, aur andar poora record sab ko show hoga. Har nayi kitaab mein wahi saare members hain lekin har mahina khali hai — us saal ki entries wahi se shuru hongi, aur har saal ka record bilkul alag mehfooz rahega.</p>
 </section>
 
+<!-- 2B) RULES PAGE — دونوں حصوں سے پہلے -->
+<section id="pageRules" class="bookpage rules hidden">
+  <h2>📌 فیملی کمیٹی کے قواعد و ضوابط</h2>
+  <ol class="ruleslist" dir="rtl">
+    <li>تمام ممبران ہر ماہ یکم سے 5 تاریخ تک اپنی کمیٹی جمع کروائیں۔</li>
+    <li>جن بھائیوں کو ممبران سے کمیٹی وصول کرنے کی ذمہ داری دی گئی ہے، وہ 5 تاریخ تک رقم سیکرٹری کے پاس جمع کروائیں۔</li>
+    <li>اگر کسی ممبر کو کسی وجہ سے تاخیر یا مجبوری ہو تو وہ فیملی واٹس ایپ گروپ میں اطلاع دے دے۔</li>
+    <li>اگر کوئی ممبر آئندہ کمیٹی میں شامل نہیں رہنا چاہتا تو وہ بلا جھجک گروپ میں بتا سکتا ہے، اس پر کسی قسم کی ناراضگی نہیں ہوگی۔</li>
+    <li>بیماری یا ہنگامی مالی ضرورت کی صورت میں باہمی مشورے سے جمع شدہ رقم میں سے عارضی مدد یا قرضِ حسنہ دیا جا سکتا ہے۔</li>
+    <li>کمیٹی کی رقم کی حفاظت اور شفافیت کے لیے تین ممبران کے نام پر ایک جوائنٹ بینک اکاؤنٹ بنایا جائے گا، جس میں ہر ماہ رقم جمع کی جائے گی۔</li>
+    <li>اگر کسی کو کوئی مشورہ یا شکایت ہو تو وہ بلا جھجک گروپ میں بتا سکتا ہے تاکہ باہمی مشورے سے بہتر فیصلہ کیا جا سکے۔</li>
+    <li>اس کمیٹی کا مقصد باہمی تعاون، اعتماد اور ایک دوسرے کی مالی مدد کرنا ہے۔</li>
+    <li>اس گروپ میں صرف وہی ممبران شامل رہیں گے جو کمیٹی میں شامل ہوں گے۔ اگر کوئی ممبر کمیٹی چھوڑ دے تو اسے گروپ سے بھی نکال دیا جائے گا، تاکہ گروپ صرف کمیٹی کے معاملات کے لیے مخصوص رہے۔</li>
+    <li>جب کمیٹی میں مناسب رقم جمع ہو جائے گی تو تمام ممبران کی مشاورت سے اس کے استعمال کا طریقۂ کار طے کیا جائے گا۔ ان شاء اللہ یہ فنڈ مستقبل میں بیماری، فوتگی اور دیگر ضروری مواقع پر سب کے کام آئے گا۔</li>
+  </ol>
+  <div class="pagenav">
+    <button class="btn" id="toCoverR">← Cover par wapas</button>
+    <span class="pageno">SAFHA 1 / 4</span>
+    <button class="btn primary big" id="toHissa1">اگلا صفحہ — حصہ اول (1-27) ➜</button>
+  </div>
+</section>
+
 <!-- 3) PAGE 1 — HISSA 1 (reference image 1) -->
 <section id="page1" class="bookpage hidden">
   <h2 id="hPage1">فنڈ لسٹ 2026 - فائنل لسٹ</h2>
@@ -155,8 +180,8 @@ table.fit td.cell{font-size:7.5px}
   <div class="legend" dir="rtl"><span><i style="background:var(--paid)"></i>ادا شدہ: 500 روپے / مہینہ</span><span><i style="background:var(--total)"></i>کل جمع</span><span><i style="background:var(--due)"></i>بقایا</span></div>
   <p class="footnote">نوٹ: ہر شخص کے لیے کل ہدف 6000 روپے ہے۔ ادائیگی 500 روپے ماہانہ کے حساب سے درج ہے۔</p>
   <div class="pagenav">
-    <button class="btn" id="toCover1">← Cover par wapas</button>
-    <span class="pageno">SAFHA 1 / 3</span>
+    <button class="btn big" id="toCover1">⬅ پچھلا صفحہ — قواعد و ضوابط</button>
+    <span class="pageno">SAFHA 2 / 4</span>
     <button class="btn primary big" id="toPage2">اگلا صفحہ — حصہ دوم (28-53) ➜</button>
   </div>
 </section>
@@ -172,7 +197,7 @@ table.fit td.cell{font-size:7.5px}
   <p class="footnote">نوٹ: ہر شخص کے لیے کل ہدف 6000 روپے ہے۔ ادائیگی 500 روپے ماہانہ کے حساب سے درج ہے۔</p>
   <div class="pagenav">
     <button class="btn big" id="backPage1">⬅ پچھلا صفحہ — حصہ اول</button>
-    <span class="pageno">SAFHA 2 / 3</span>
+    <span class="pageno">SAFHA 3 / 4</span>
     <button class="btn primary big" id="toPage3">آخری صفحہ — کل خلاصہ ➜</button>
   </div>
   <div id="addWrap" style="margin-top:14px;border:1.5px dashed var(--gold);border-radius:14px;padding:12px;background:#fffdf0">
@@ -213,7 +238,7 @@ table.fit td.cell{font-size:7.5px}
   </div>
   <div class="pagenav">
     <button class="btn big" id="backPage2">⬅ پچھلا صفحہ — حصہ دوم</button>
-    <span class="pageno">SAFHA 3 / 3</span>
+    <span class="pageno">SAFHA 4 / 4</span>
     <button class="btn" onclick="window.print()">🖨 Final List Print / PDF</button>
     <button class="btn primary big" id="closeBook">📕 Kitaab Band Karein</button>
   </div>
@@ -296,21 +321,23 @@ doLogout.onclick=()=>setSession(null);
 function downloadFile(name,content,type){ const b=new Blob([content],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},400); }
 dlBackup.onclick=()=>{ if(!isAdmin())return; const data={app:"Fund Book",year:DB.year,monthly_amount:500,yearly_target_per_member:6000,exported_at:new Date().toISOString(),members:members.map(m=>({id:m.id,name:m.name,paid:m.paid,total:m.paid.filter(Boolean).length*500}))}; downloadFile("fund-book-"+DB.year+"-backup.json",JSON.stringify(data,null,2),"application/json"); alert("✅ Backup file download ho gayi: fund-book-"+DB.year+"-backup.json\nIs file ko WhatsApp / Google Drive mein mehfooz rakhein — yahi Restore ke kaam ayegi."); };
 dlCsv.onclick=()=>{ if(!isAdmin())return; const men=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; const rows=[["No","Name",...men,"Total","Due"],...members.map(m=>[m.id,m.name,...m.paid.map(p=>p?500:""),m.paid.filter(Boolean).length*500,6000-m.paid.filter(Boolean).length*500])]; const csv="﻿"+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n"); downloadFile("fund-book-"+DB.year+"-list.csv",csv,"text/csv"); };
-restoreFile.onchange=()=>{ if(!isAdmin())return; const f=restoreFile.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); const list=d.members||d; if(!Array.isArray(list)||!list.length||!list[0].paid) throw 0; if(!confirm("Is backup se maujooda data badal jayega. Restore karein?")) return; members=list.map(m=>({id:m.id,name:m.name,paid:m.paid})); save(); render(); showPage(1); alert("✅ Backup restore ho gaya — "+members.length+" members ka data load ho gaya."); }catch(e){ alert("❌ Ye file sahi backup nahi hai. Wohi JSON file chunein jo Backup Download se mili thi."); } restoreFile.value=""; }; r.readAsText(f); };
+restoreFile.onchange=()=>{ if(!isAdmin())return; const f=restoreFile.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); const list=d.members||d; if(!Array.isArray(list)||!list.length||!list[0].paid) throw 0; if(!confirm("Is backup se maujooda data badal jayega. Restore karein?")) return; members=list.map(m=>({id:m.id,name:m.name,paid:m.paid})); save(); render(); showPage(2); alert("✅ Backup restore ho gaya — "+members.length+" members ka data load ho gaya."); }catch(e){ alert("❌ Ye file sahi backup nahi hai. Wohi JSON file chunein jo Backup Download se mili thi."); } restoreFile.value=""; }; r.readAsText(f); };
 /* BOOK FLOW */
 function showPage(n){
-  ["page1","page2","page3"].forEach((p,i)=>{ const el=document.getElementById(p); const on=(i+1)===n; el.classList.toggle("hidden",!on); if(on){ el.classList.remove("flipIn"); void el.offsetWidth; el.classList.add("flipIn"); el.scrollIntoView({behavior:"smooth",block:"start"}); } });
+  ["pageRules","page1","page2","page3"].forEach((p,i)=>{ const el=document.getElementById(p); const on=(i+1)===n; el.classList.toggle("hidden",!on); if(on){ el.classList.remove("flipIn"); void el.offsetWidth; el.classList.add("flipIn"); el.scrollIntoView({behavior:"smooth",block:"start"}); } });
   coverView.classList.toggle("hidden",n!==0);
   render();
 }
 const QUOTE_HTML=`<div class="quote"><div class="qlabel">قرآنِ مجید</div><div class="arabic">فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا</div><div class="urdu">پس بے شک مشکل کے ساتھ آسانی ہے۔ بے شک مشکل کے ساتھ آسانی ہے۔</div><div class="source">(سورۃ الشرح، آیت ۵–۶)</div></div>`;
 coverStage.innerHTML=YEARS.map(y=>`<div class="cover" data-y="${y}" style="width:min(310px,86vw);min-height:560px;height:auto"><small>Monthly Fund Register</small><div class="fname">برادری باہمی امداد فنڈ بک</div><div class="fsub">برائے فوتگی و بیماری</div><div class="yr">${y}</div><div class="rule"></div>${QUOTE_HTML}<span class="tap">📖 Tap karein — ${y} ki Kitaab</span></div>`).join("");
 document.querySelectorAll(".cover").forEach(el=>{ el.onclick=()=>setYear(+el.dataset.y,el); });
-toCover1.onclick=()=>showPage(0);
-toPage2.onclick=()=>showPage(2);
-backPage1.onclick=()=>showPage(1);
-toPage3.onclick=()=>showPage(3);
-backPage2.onclick=()=>showPage(2);
+toCoverR.onclick=()=>showPage(0);
+toHissa1.onclick=()=>showPage(2);
+toCover1.onclick=()=>showPage(1);
+toPage2.onclick=()=>showPage(3);
+backPage1.onclick=()=>showPage(2);
+toPage3.onclick=()=>showPage(4);
+backPage2.onclick=()=>showPage(3);
 closeBook.onclick=()=>showPage(0);
 /* TABLES — reference image jaisi */
 function buildBlocks(list){

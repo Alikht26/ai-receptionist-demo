@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>برادری باہمی امداد فنڈ بک — Fund Book v15</title>
+<title>برادری باہمی امداد فنڈ بک — Fund Book v16</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -141,37 +141,8 @@ table.fit td.cell{font-size:7.5px}
 
 <!-- FRONT — BOOK COVER (sab ko show, bina login) -->
 <section id="coverView">
-  <div class="stage" style="gap:18px;flex-wrap:wrap">
-    <div class="cover" id="bookCover" style="width:min(310px,86vw);min-height:560px;height:auto">
-      <small>Monthly Fund Register</small>
-      <div class="fname">برادری باہمی امداد فنڈ بک</div>
-      <div class="fsub">برائے فوتگی و بیماری</div>
-      <div class="yr">2026</div>
-      <div class="rule"></div>
-      <div class="quote">
-        <div class="qlabel">قرآنِ مجید</div>
-        <div class="arabic">فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا</div>
-        <div class="urdu">پس بے شک مشکل کے ساتھ آسانی ہے۔ بے شک مشکل کے ساتھ آسانی ہے۔</div>
-        <div class="source">(سورۃ الشرح، آیت ۵–۶)</div>
-      </div>
-      <span class="tap">📖 Tap karein — 2026 ki Kitaab</span>
-    </div>
-    <div class="cover" id="bookCover27" style="width:min(310px,86vw);min-height:560px;height:auto">
-      <small>Monthly Fund Register</small>
-      <div class="fname">برادری باہمی امداد فنڈ بک</div>
-      <div class="fsub">برائے فوتگی و بیماری</div>
-      <div class="yr">2027</div>
-      <div class="rule"></div>
-      <div class="quote">
-        <div class="qlabel">قرآنِ مجید</div>
-        <div class="arabic">فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا</div>
-        <div class="urdu">پس بے شک مشکل کے ساتھ آسانی ہے۔ بے شک مشکل کے ساتھ آسانی ہے۔</div>
-        <div class="source">(سورۃ الشرح، آیت ۵–۶)</div>
-      </div>
-      <span class="tap">📖 Tap karein — 2027 ki Kitaab</span>
-    </div>
-  </div>
-  <p class="note">Har saal ki apni kitaab hai. Jis saal ki kitaab kholni hai us par tap karein — safha <b>book ki tarah flip</b> hokar khulega, aur andar poora record sab ko show hoga. <b>2027</b> wali kitaab mein wahi saare members hain lekin har mahina khali hai — naye saal ki entries yahin se shuru hongi, 2026 wala record bilkul alag mehfooz rahega.</p>
+  <div class="stage" id="coverStage" style="gap:18px;flex-wrap:wrap"></div>
+  <p class="note">Har saal ki apni kitaab hai — <b>2026 se 2030</b> tak. Jis saal ki kitaab kholni hai us par tap karein — safha <b>book ki tarah flip</b> hokar khulega, aur andar poora record sab ko show hoga. Har nayi kitaab mein wahi saare members hain lekin har mahina khali hai — us saal ki entries wahi se shuru hongi, aur har saal ka record bilkul alag mehfooz rahega.</p>
 </section>
 
 <!-- 3) PAGE 1 — HISSA 1 (reference image 1) -->
@@ -289,7 +260,8 @@ if(!DB){
   const y27=y26.map(m=>({id:m.id,name:m.name,paid:Array(12).fill(false)}));
   DB={year:2026,years:{2026:y26,2027:y27}};
 }
-if(!DB.years[2027]) DB.years[2027]=DB.years[2026].map(m=>({id:m.id,name:m.name,paid:Array(12).fill(false)}));
+const YEARS=[2026,2027,2028,2029,2030];
+YEARS.forEach(y=>{ if(!DB.years[y]) DB.years[y]=DB.years[2026].map(m=>({id:m.id,name:m.name,paid:Array(12).fill(false)})); });
 let members=DB.years[DB.year];
 function save(){ DB.years[DB.year]=members; try{ localStorage.setItem("fundBookDBv2",JSON.stringify(DB)); localStorage.setItem("fundBook2026v1",JSON.stringify(DB.years[2026])); }catch(e){} }
 function setYear(y,coverEl){ DB.year=y; members=DB.years[y]; save(); render(); if(coverEl){ coverEl.classList.add("opening"); setTimeout(()=>{ coverEl.classList.remove("opening"); showPage(1); },650); } else showPage(1); }
@@ -331,8 +303,9 @@ function showPage(n){
   coverView.classList.toggle("hidden",n!==0);
   render();
 }
-bookCover.onclick=()=>setYear(2026,bookCover);
-bookCover27.onclick=()=>setYear(2027,bookCover27);
+const QUOTE_HTML=`<div class="quote"><div class="qlabel">قرآنِ مجید</div><div class="arabic">فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا</div><div class="urdu">پس بے شک مشکل کے ساتھ آسانی ہے۔ بے شک مشکل کے ساتھ آسانی ہے۔</div><div class="source">(سورۃ الشرح، آیت ۵–۶)</div></div>`;
+coverStage.innerHTML=YEARS.map(y=>`<div class="cover" data-y="${y}" style="width:min(310px,86vw);min-height:560px;height:auto"><small>Monthly Fund Register</small><div class="fname">برادری باہمی امداد فنڈ بک</div><div class="fsub">برائے فوتگی و بیماری</div><div class="yr">${y}</div><div class="rule"></div>${QUOTE_HTML}<span class="tap">📖 Tap karein — ${y} ki Kitaab</span></div>`).join("");
+document.querySelectorAll(".cover").forEach(el=>{ el.onclick=()=>setYear(+el.dataset.y,el); });
 toCover1.onclick=()=>showPage(0);
 toPage2.onclick=()=>showPage(2);
 backPage1.onclick=()=>showPage(1);

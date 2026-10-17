@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>باہمی امداد فنڈ — Fund Book</title>
+<title>باہمی امداد فنڈ — Fund Book v13</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -34,6 +34,16 @@ header{padding:20px 16px 4px;text-align:center}header h1{font-family:"Playfair D
 .cover .rule{width:80px;height:2px;background:var(--gold)}
 .cover .tap{background:#fef3c7;border:1px solid #f2d38a;color:#92400e;font-weight:800;font-size:13px;padding:8px 14px;border-radius:999px;animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.cover .fname{font-family:"Noto Nastaliq Urdu",serif;font-size:34px;line-height:1.85;color:#7b5b12;font-weight:700}
+.cover .fsub{font-family:"Noto Nastaliq Urdu",serif;font-size:15px;line-height:1.8;color:#77663d;margin-top:-7px}
+.cover-art{width:100%;border:1px solid #cdb271;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 50% 0%,#2b7a49 0%,#14532d 48%,#0b3520 100%);box-shadow:inset 0 0 0 1px rgba(255,243,214,.18),0 8px 18px rgba(87,64,10,.16)}
+.cover-art svg{display:block;width:100%;height:auto}
+.cover .quote{direction:rtl;width:100%;background:linear-gradient(180deg,#fffaf0,#fff4d6);border:1px solid #dec887;border-radius:15px;padding:8px 11px 7px;color:#4a3810;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65)}
+.cover .quote .qlabel{font-family:"Noto Nastaliq Urdu",serif;font-size:11px;line-height:1.7;color:#96741f;font-weight:700}
+.cover .quote .arabic{font-family:"Noto Nastaliq Urdu",serif;font-size:14px;line-height:2;color:#14532d;font-weight:700}
+.cover .quote .urdu{font-family:"Noto Nastaliq Urdu",serif;font-size:11px;line-height:1.9;color:#59461a}
+.cover .quote .source{font-size:9px;letter-spacing:.4px;color:#8a744a;margin-top:1px}
+
 /* PAGES — reference image style */
 .bookpage{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 45px rgba(120,90,20,.18);padding:18px 14px 14px;transform-origin:left center}
 .bookpage.flipIn{animation:flipIn .7s cubic-bezier(.3,0,.2,1)}
@@ -134,7 +144,7 @@ table.fit td.cell{font-size:7.5px}
 <!-- FRONT — BOOK COVER (sab ko show, bina login) -->
 <section id="coverView">
   <div class="stage" style="gap:18px;flex-wrap:wrap">
-    <div class="cover" id="bookCover" style="width:min(300px,80vw);height:490px">
+    <div class="cover" id="bookCover" style="width:min(310px,86vw);min-height:710px;height:auto">
       <small>Monthly Fund Register</small>
       <div class="fname">باہمی امداد فنڈ</div>
       <div class="fsub">برائے فوتگی و بیماری</div>
@@ -142,9 +152,46 @@ table.fit td.cell{font-size:7.5px}
       <div class="rule"></div>
       <h2 style="font-size:22px">فنڈ لسٹ — فائنل لسٹ</h2>
       <small id="meta26">53 Members • 500 / Month • 6000 / Year</small>
+      <div class="cover-art" aria-label="فوتگی، بیماری اور بے سہارا لوگوں کی امداد کی علامتی تصویر">
+        <svg viewBox="0 0 520 184" role="img" aria-labelledby="artTitle artDesc">
+          <title id="artTitle">باہمی امداد</title><desc id="artDesc">ایک طرف جنازہ اور مسجد، دوسری طرف مریض اور بے سہارا شخص کو امداد دیتا ہوا مددگار</desc>
+          <g fill="none" stroke="#ecd28c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M260 14v118" stroke-dasharray="3 7" opacity=".55"/>
+            <path d="M274 18a15 15 0 1 0 8 27a18 18 0 0 1-8-27Z" fill="#f7d774" stroke="none"/>
+            <path d="M42 132h184M292 132h186" opacity=".7"/>
+            <!-- Masjid aur janaza -->
+            <path d="M30 132V88m0 0c8-15 17-22 28-25 11 3 20 10 28 25v44M58 63V49m0 0l7 8h-14Z"/>
+            <path d="M38 101h40M38 117h40" opacity=".8"/>
+            <path d="M94 108c18-15 31-21 52-21s34 6 52 21l-8 22H102Z" fill="#237347"/>
+            <path d="M102 130v10m88-10v10M88 140h116" />
+            <path d="M146 91c4 6 4 10 0 15-4-5-4-9 0-15Z" fill="#f7d774" stroke="none"/>
+            <circle cx="83" cy="99" r="7" fill="#fff3d6"/><path d="M83 106v25m0-18-12 10m12-7 12 8"/>
+            <circle cx="210" cy="99" r="7" fill="#fff3d6"/><path d="M210 106v25m0-18 12 10m-12-7-12 8"/>
+            <!-- Madadgar, besahara shakhs aur mareez -->
+            <circle cx="315" cy="72" r="9" fill="#fff3d6"/><path d="M315 81v39m0-27-17 15m17-10 25 8m-25 14-13 20m13-20 15 20"/>
+            <rect x="338" y="57" width="34" height="24" rx="3" transform="rotate(-8 355 69)" fill="#fff3d6" stroke="#b9975b"/>
+            <path d="M342 62l13 10 14-12" stroke="#b9975b"/>
+            <path d="M352 69h.1" stroke="#b42318" stroke-width="5"/>
+            <circle cx="386" cy="86" r="8" fill="#fff3d6"/><path d="M386 94v27m0-18 17 7m-17 11-8 19m8-16 15 8 3 17" />
+            <path d="M414 121h68m-68 0 8-19h48l12 19m-60-19v-9h42v9" />
+            <circle cx="463" cy="77" r="8" fill="#fff3d6"/><path d="M455 88c-12 3-21 9-27 17l39 4c7-8 5-16-4-21Z" fill="#237347"/>
+            <path d="M421 84h29" opacity=".8"/>
+          </g>
+          <g font-family="'Noto Nastaliq Urdu',serif" font-size="15" fill="#fff3d6" text-anchor="middle">
+            <text x="130" y="170">فوتگی میں سہارا</text>
+            <text x="392" y="170">بیماری و بے بسی میں امداد</text>
+          </g>
+        </svg>
+      </div>
+      <div class="quote">
+        <div class="qlabel">فرمانِ رسول اللہ ﷺ</div>
+        <div class="arabic">مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا، نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ، وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ، يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالْآخِرَةِ</div>
+        <div class="urdu">جس نے کسی مومن کی دنیا کی کوئی تکلیف دور کی، اللہ اس کی قیامت کے دن کی ایک تکلیف دور فرمائے گا، اور جس نے کسی تنگ دست کے لیے آسانی پیدا کی، اللہ اس کے لیے دنیا و آخرت میں آسانی پیدا فرمائے گا۔</div>
+        <div class="source">(صحیح مسلم)</div>
+      </div>
       <span class="tap">📖 Tap karein — 2026 ki Kitaab</span>
     </div>
-    <div class="cover" id="bookCover27" style="width:min(300px,80vw);height:490px">
+    <div class="cover" id="bookCover27" style="width:min(310px,86vw);min-height:710px;height:auto">
       <small>Monthly Fund Register</small>
       <div class="fname">باہمی امداد فنڈ</div>
       <div class="fsub">برائے فوتگی و بیماری</div>
@@ -152,6 +199,43 @@ table.fit td.cell{font-size:7.5px}
       <div class="rule"></div>
       <h2 style="font-size:22px">فنڈ لسٹ — نیا سال</h2>
       <small id="meta27">Wahi members • Saare mahine khali</small>
+      <div class="cover-art" aria-label="فوتگی، بیماری اور بے سہارا لوگوں کی امداد کی علامتی تصویر">
+        <svg viewBox="0 0 520 184" role="img" aria-labelledby="artTitle artDesc">
+          <title id="artTitle">باہمی امداد</title><desc id="artDesc">ایک طرف جنازہ اور مسجد، دوسری طرف مریض اور بے سہارا شخص کو امداد دیتا ہوا مددگار</desc>
+          <g fill="none" stroke="#ecd28c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M260 14v118" stroke-dasharray="3 7" opacity=".55"/>
+            <path d="M274 18a15 15 0 1 0 8 27a18 18 0 0 1-8-27Z" fill="#f7d774" stroke="none"/>
+            <path d="M42 132h184M292 132h186" opacity=".7"/>
+            <!-- Masjid aur janaza -->
+            <path d="M30 132V88m0 0c8-15 17-22 28-25 11 3 20 10 28 25v44M58 63V49m0 0l7 8h-14Z"/>
+            <path d="M38 101h40M38 117h40" opacity=".8"/>
+            <path d="M94 108c18-15 31-21 52-21s34 6 52 21l-8 22H102Z" fill="#237347"/>
+            <path d="M102 130v10m88-10v10M88 140h116" />
+            <path d="M146 91c4 6 4 10 0 15-4-5-4-9 0-15Z" fill="#f7d774" stroke="none"/>
+            <circle cx="83" cy="99" r="7" fill="#fff3d6"/><path d="M83 106v25m0-18-12 10m12-7 12 8"/>
+            <circle cx="210" cy="99" r="7" fill="#fff3d6"/><path d="M210 106v25m0-18 12 10m-12-7-12 8"/>
+            <!-- Madadgar, besahara shakhs aur mareez -->
+            <circle cx="315" cy="72" r="9" fill="#fff3d6"/><path d="M315 81v39m0-27-17 15m17-10 25 8m-25 14-13 20m13-20 15 20"/>
+            <rect x="338" y="57" width="34" height="24" rx="3" transform="rotate(-8 355 69)" fill="#fff3d6" stroke="#b9975b"/>
+            <path d="M342 62l13 10 14-12" stroke="#b9975b"/>
+            <path d="M352 69h.1" stroke="#b42318" stroke-width="5"/>
+            <circle cx="386" cy="86" r="8" fill="#fff3d6"/><path d="M386 94v27m0-18 17 7m-17 11-8 19m8-16 15 8 3 17" />
+            <path d="M414 121h68m-68 0 8-19h48l12 19m-60-19v-9h42v9" />
+            <circle cx="463" cy="77" r="8" fill="#fff3d6"/><path d="M455 88c-12 3-21 9-27 17l39 4c7-8 5-16-4-21Z" fill="#237347"/>
+            <path d="M421 84h29" opacity=".8"/>
+          </g>
+          <g font-family="'Noto Nastaliq Urdu',serif" font-size="15" fill="#fff3d6" text-anchor="middle">
+            <text x="130" y="170">فوتگی میں سہارا</text>
+            <text x="392" y="170">بیماری و بے بسی میں امداد</text>
+          </g>
+        </svg>
+      </div>
+      <div class="quote">
+        <div class="qlabel">فرمانِ رسول اللہ ﷺ</div>
+        <div class="arabic">مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا، نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ، وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ، يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالْآخِرَةِ</div>
+        <div class="urdu">جس نے کسی مومن کی دنیا کی کوئی تکلیف دور کی، اللہ اس کی قیامت کے دن کی ایک تکلیف دور فرمائے گا، اور جس نے کسی تنگ دست کے لیے آسانی پیدا کی، اللہ اس کے لیے دنیا و آخرت میں آسانی پیدا فرمائے گا۔</div>
+        <div class="source">(صحیح مسلم)</div>
+      </div>
       <span class="tap">📖 Tap karein — 2027 ki Kitaab</span>
     </div>
   </div>

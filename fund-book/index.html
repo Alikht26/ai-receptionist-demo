@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>باہمی امداد فنڈ — Fund Book v13</title>
+<title>برادری باہمی امداد فنڈ بک — Fund Book v14</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -146,12 +146,10 @@ table.fit td.cell{font-size:7.5px}
   <div class="stage" style="gap:18px;flex-wrap:wrap">
     <div class="cover" id="bookCover" style="width:min(310px,86vw);min-height:710px;height:auto">
       <small>Monthly Fund Register</small>
-      <div class="fname">باہمی امداد فنڈ</div>
+      <div class="fname">برادری باہمی امداد فنڈ بک</div>
       <div class="fsub">برائے فوتگی و بیماری</div>
       <div class="yr">2026</div>
       <div class="rule"></div>
-      <h2 style="font-size:22px">فنڈ لسٹ — فائنل لسٹ</h2>
-      <small id="meta26">53 Members • 500 / Month • 6000 / Year</small>
       <div class="cover-art" aria-label="فوتگی، بیماری اور بے سہارا لوگوں کی امداد کی علامتی تصویر">
         <svg viewBox="0 0 520 184" role="img" aria-labelledby="artTitle artDesc">
           <title id="artTitle">باہمی امداد</title><desc id="artDesc">ایک طرف جنازہ اور مسجد، دوسری طرف مریض اور بے سہارا شخص کو امداد دیتا ہوا مددگار</desc>
@@ -193,12 +191,10 @@ table.fit td.cell{font-size:7.5px}
     </div>
     <div class="cover" id="bookCover27" style="width:min(310px,86vw);min-height:710px;height:auto">
       <small>Monthly Fund Register</small>
-      <div class="fname">باہمی امداد فنڈ</div>
+      <div class="fname">برادری باہمی امداد فنڈ بک</div>
       <div class="fsub">برائے فوتگی و بیماری</div>
       <div class="yr">2027</div>
       <div class="rule"></div>
-      <h2 style="font-size:22px">فنڈ لسٹ — نیا سال</h2>
-      <small id="meta27">Wahi members • Saare mahine khali</small>
       <div class="cover-art" aria-label="فوتگی، بیماری اور بے سہارا لوگوں کی امداد کی علامتی تصویر">
         <svg viewBox="0 0 520 184" role="img" aria-labelledby="artTitle artDesc">
           <title id="artTitle">باہمی امداد</title><desc id="artDesc">ایک طرف جنازہ اور مسجد، دوسری طرف مریض اور بے سہارا شخص کو امداد دیتا ہوا مددگار</desc>
@@ -436,9 +432,6 @@ function render(){
   hPage1.textContent="فنڈ لسٹ "+DB.year+" - فائنل لسٹ";
   hPage2.textContent="فنڈ لسٹ "+DB.year+" - فائنل لسٹ - حصہ دوم";
   hPage3.textContent="کل خلاصہ — "+DB.year;
-  meta26.textContent=DB.years[2026].length+" Members • 500 / Month • 6000 / Year";
-  const c27=DB.years[2027].reduce((s,m)=>s+m.paid.filter(Boolean).length*500,0);
-  meta27.textContent=DB.years[2027].length+" Members • Jama ab tak: Rs "+c27.toLocaleString("en-PK");
 }
 window.toggleCell=(id,i)=>{ if(!isAdmin()){ alert("👁 Ye View Mode hai — record sab ko sirf show hota hai.\nEntry ke liye upar 🔐 Admin Login karein.\nAdmin ID: admin · Password: admin123"); return; } const m=members.find(x=>x.id===id); m.paid[i]=!m.paid[i]; save(); render(); };
 window.askRemove=(btn,id)=>{ if(!isAdmin())return;

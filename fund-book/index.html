@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>برادری باہمی امداد فنڈ بک — Fund Book v17</title>
+<title>برادری باہمی امداد فنڈ بک</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -107,7 +107,7 @@ table.fit td.cell{font-size:7.5px}
 @media print{.rolebar,.pagenav,header,.modehint,.viewbar{display:none}body{background:#fff}.bookpage{box-shadow:none}}
 </style></head>
 <body>
-<header><h1>Fund Book</h1><p>MONTHLY FUND REGISTER • 2026</p></header>
+<header><h1>برادری باہمی امداد فنڈ بک</h1><p>MONTHLY FUND REGISTER • 2026 — 2030</p></header>
 <div class="wrap">
 
 <!-- ROLE BAR — hamesha upar: View Mode ya Admin Mode -->
@@ -129,10 +129,10 @@ table.fit td.cell{font-size:7.5px}
       👤 Login ID: &nbsp;<b style="font-size:16px">admin</b><br>
       🔑 Password: &nbsp;<b style="font-size:16px">admin123</b>
     </div>
-    <button class="btn primary" style="width:100%;padding:14px;font-size:15px;margin-top:12px" id="tapAdmin">👑 Ek Tap Admin Login (prototype test)</button>
-    <p class="note" style="margin-bottom:0">Asal app mein Admin yehi ID aur password type karke login karega, aur password baad mein khud change kar sakega. Password ke baghair edit, add ya delete <b>nahi</b> ho sakta.</p>
+    <button class="btn primary" style="width:100%;padding:14px;font-size:15px;margin-top:12px" id="tapAdmin">👑 Ek Tap Admin Login</button>
+    <p class="note" style="margin-bottom:0">Admin yehi ID aur password se login karega. Password ke baghair koi edit, add ya delete <b>nahi</b> ho sakta — baqi sab members sirf record dekh sakte hain.</p>
     <details style="margin-top:10px;text-align:left">
-      <summary style="font-size:13px;font-weight:700;color:var(--gold2);cursor:pointer">ID / Password type karke login (Chrome ya asal app mein)</summary>
+      <summary style="font-size:13px;font-weight:700;color:var(--gold2);cursor:pointer">ID / Password type karke login</summary>
       <input type="text" id="loginId" placeholder="Login ID: admin">
       <input type="password" id="loginPass" placeholder="Password: admin123">
       <div class="err" id="loginErr"></div>
@@ -227,7 +227,7 @@ table.fit td.cell{font-size:7.5px}
   <p class="note" id="modeHint3"></p>
   <div style="border:1.5px solid var(--gold);border-radius:14px;padding:14px;background:#fffdf0;margin-top:10px">
     <p style="margin:0 0 6px;font-weight:800;font-size:15px">💾 Data Backup — Crash se Hifazat (Sirf Admin)</p>
-    <p class="note" style="text-align:left;margin:0">Asal application mein har entry <b>online database (server)</b> mein save hogi, sirf phone mein nahi — app crash ho, uninstall ho ya phone kho jaye, Admin dobara login kare to poora data wapas aa jayega. Is ke ilawa yahan se <b>backup file</b> nikaal kar apne paas (WhatsApp / Google Drive) rakh sakte hain; zaroorat par wohi file <b>Restore</b> karke data wapas load ho jayega.</p>
+    <p class="note" style="text-align:left;margin:0">Har entry isi phone / browser mein save hoti hai. Is liye waqtan fawaqtan <b>Backup file</b> download karke apne paas (WhatsApp / Google Drive) mehfooz rakhein. Agar phone badal jaye ya data saaf ho jaye to wohi file <b>Restore</b> karke poora data wapas load ho jayega.</p>
     <div id="backupLocked" class="note" style="text-align:left">🔒 Backup / Restore ke liye pehle <b>Admin Login</b> karein (ID: admin · Password: admin123).</div>
     <div id="backupTools" style="display:none;gap:8px;flex-wrap:wrap;margin-top:10px">
       <button class="btn primary" id="dlBackup">⬇️ Backup File Download (JSON)</button>

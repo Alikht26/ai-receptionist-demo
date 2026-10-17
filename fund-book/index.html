@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ur"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fund Book 2026 — v10 (Data Backup + Restore)</title>
+<title>Fund Book — v11 (2027 Book + Member Remove)</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a86a;--gold2:#a07d2c;--ink:#2b2110;--muted:#7a6a48;--line:#e7dcc0;--green:#175c33;--paid:#d9efdb;--total:#dceafe;--due:#fde3e3}
@@ -133,23 +133,32 @@ table.fit td.cell{font-size:7.5px}
 
 <!-- FRONT — BOOK COVER (sab ko show, bina login) -->
 <section id="coverView">
-  <div class="stage">
-    <div class="cover" id="bookCover">
+  <div class="stage" style="gap:18px;flex-wrap:wrap">
+    <div class="cover" id="bookCover" style="width:min(300px,80vw);height:430px">
       <small>Monthly Fund Register</small>
       <h2>فنڈ لسٹ</h2>
       <div class="yr">2026</div>
       <div class="rule"></div>
       <h2 style="font-size:22px">فائنل لسٹ</h2>
-      <small>53 Members • 500 / Month • 6000 / Year</small>
-      <span class="tap">📖 Tap karein — Kitaab Khulegi</span>
+      <small id="meta26">53 Members • 500 / Month • 6000 / Year</small>
+      <span class="tap">📖 Tap karein — 2026 ki Kitaab</span>
+    </div>
+    <div class="cover" id="bookCover27" style="width:min(300px,80vw);height:430px">
+      <small>Monthly Fund Register</small>
+      <h2>فنڈ لسٹ</h2>
+      <div class="yr">2027</div>
+      <div class="rule"></div>
+      <h2 style="font-size:22px">نیا سال</h2>
+      <small id="meta27">Wahi members • Saare mahine khali</small>
+      <span class="tap">📖 Tap karein — 2027 ki Kitaab</span>
     </div>
   </div>
-  <p class="note">Ye app ka <b>front page</b> hai — book ka cover. Cover par tap karte hi safha <b>book ki tarah flip</b> hokar khulega, aur andar poora record sab ko show hoga.</p>
+  <p class="note">Har saal ki apni kitaab hai. Jis saal ki kitaab kholni hai us par tap karein — safha <b>book ki tarah flip</b> hokar khulega, aur andar poora record sab ko show hoga. <b>2027</b> wali kitaab mein wahi saare members hain lekin har mahina khali hai — naye saal ki entries yahin se shuru hongi, 2026 wala record bilkul alag mehfooz rahega.</p>
 </section>
 
 <!-- 3) PAGE 1 — HISSA 1 (reference image 1) -->
 <section id="page1" class="bookpage hidden">
-  <h2>فنڈ لسٹ 2026 - فائنل لسٹ</h2>
+  <h2 id="hPage1">فنڈ لسٹ 2026 - فائنل لسٹ</h2>
   <p class="sub">حصہ اول (1-27) &nbsp;|&nbsp; ہر مہینہ 500 روپے &nbsp;|&nbsp; بقایا = 6000 - کل جمع &nbsp;|&nbsp; اکتوبر تا دسمبر: مستقبل</p>
   <div class="viewbar"><button class="btn on" id="vb1Blocks">🧩 Blocks View — Edit ke liye</button><button class="btn" id="vb1Fit">📋 Full List — Ek Screen Par</button></div>
   <div id="blocks1"></div>
@@ -165,7 +174,7 @@ table.fit td.cell{font-size:7.5px}
 
 <!-- 4) PAGE 2 — HISSA 2 (reference image 2) -->
 <section id="page2" class="bookpage hidden">
-  <h2>فنڈ لسٹ 2026 - فائنل لسٹ - حصہ دوم</h2>
+  <h2 id="hPage2">فنڈ لسٹ 2026 - فائنل لسٹ - حصہ دوم</h2>
   <p class="sub">حصہ دوم (28-53) &nbsp;|&nbsp; ہر مہینہ 500 روپے &nbsp;|&nbsp; بقایا = 6000 - کل جمع &nbsp;|&nbsp; اکتوبر تا دسمبر: مستقبل</p>
   <div class="viewbar"><button class="btn on" id="vb2Blocks">🧩 Blocks View — Edit ke liye</button><button class="btn" id="vb2Fit">📋 Full List — Ek Screen Par</button></div>
   <div id="blocks2"></div>
@@ -194,7 +203,7 @@ table.fit td.cell{font-size:7.5px}
 
 <!-- 5) PAGE 3 — SUMMARY / LAST PAGE -->
 <section id="page3" class="bookpage hidden">
-  <h2>کل خلاصہ — 2026</h2>
+  <h2 id="hPage3">کل خلاصہ — 2026</h2>
   <div class="stats">
     <div class="stat"><span>Kul Members</span><b id="stMembers">53</b></div>
     <div class="stat"><span>Kul Jama</span><b id="stCollected"></b></div>
@@ -253,9 +262,19 @@ const RAW=[
 [1,"شفیع محمد",9],[2,"محمد ریاض",9],[3,"امتیاز احمد",9],[4,"محمد افضل",10],[5,"شیراز احمد",9],[6,"محمد شہباز",3],[7,"نور محمد",9],[8,"محمد عباس",9],[9,"محمد شہزاد",9],[10,"الیاس احمد",9],[11,"محمد وقاص",9],[12,"سرفراز",9],[13,"قاری عرفان",9],[14,"قاری واجد",9],[15,"محبت خان",7],[16,"مشتاق",6],[17,"فرمان علی",9],[18,"محمد محبوب",3],[19,"قاری نعیم",3],[20,"محمد ندیم",4],[21,"نصار فوجی",9],[22,"اشتیاق احمد",9],[23,"محمد اسرار",9],[24,"محمد ابرار",9],[25,"محمد صداقت",3],[26,"قاری احسان",8],[27,"محمد قاسم",7],
 [28,"محمد فیصل",7],[29,"محمد فیاض",6],[30,"محمد جاوید",4],[31,"محمد عادل",4],[32,"محمد گلزار",8],[33,"عدیل احمد",8],[34,"محمد عقیل",8],[35,"محمد رفیق",9],[36,"محمد شفیق",9],[37,"بلال احمد",9],[38,"محمد امجد",9],[39,"عمر زمان",6],[40,"محمد رفاقت",6],[41,"خان محمد",4],[42,"محمد مزمل",4],[43,"عادل خان",4],[44,"جہانزیب خان",3],[45,"محمد عظیم",3],[46,"ولی محمد",4],[47,"محمد عامر",4],[48,"محمد فیاض",9],[49,"محمد اشتیاق",9],[50,"یاسر خان",6],[51,"محمد فیصل",6],[52,"محمد لیاقت",4],[53,"محمد عادل",4]
 ];
-let members; try{ members=JSON.parse(localStorage.getItem("fundBook2026v1"))||null }catch(e){}
-if(!members){ members=RAW.map(r=>({id:r[0],name:r[1],paid:Array.from({length:12},(_,i)=>i<r[2])})); save(); }
-function save(){ try{localStorage.setItem("fundBook2026v1",JSON.stringify(members))}catch(e){} }
+/* DATA — har saal ki alag list: DB.years[2026], DB.years[2027] */
+let DB=null;
+try{ DB=JSON.parse(localStorage.getItem("fundBookDBv2"))||null }catch(e){}
+if(!DB){
+  let y26=null; try{ y26=JSON.parse(localStorage.getItem("fundBook2026v1"))||null }catch(e){}
+  if(!y26) y26=RAW.map(r=>({id:r[0],name:r[1],paid:Array.from({length:12},(_,i)=>i<r[2])}));
+  const y27=y26.map(m=>({id:m.id,name:m.name,paid:Array(12).fill(false)}));
+  DB={year:2026,years:{2026:y26,2027:y27}};
+}
+if(!DB.years[2027]) DB.years[2027]=DB.years[2026].map(m=>({id:m.id,name:m.name,paid:Array(12).fill(false)}));
+let members=DB.years[DB.year];
+function save(){ DB.years[DB.year]=members; try{ localStorage.setItem("fundBookDBv2",JSON.stringify(DB)); localStorage.setItem("fundBook2026v1",JSON.stringify(DB.years[2026])); }catch(e){} }
+function setYear(y,coverEl){ DB.year=y; members=DB.years[y]; save(); render(); if(coverEl){ coverEl.classList.add("opening"); setTimeout(()=>{ coverEl.classList.remove("opening"); showPage(1); },650); } else showPage(1); }
 const fmt=n=>"Rs "+n.toLocaleString("en-PK");
 /* AUTH — sirf Admin login, baqi sab View Mode (bina login) */
 let session=null; try{ session=JSON.parse(localStorage.getItem("fundSession"))||null }catch(e){}
@@ -272,7 +291,7 @@ function applyRole(){
   addWrap.style.display=admin?"block":"none";
   backupLocked.style.display=admin?"none":"block";
   backupTools.style.display=admin?"flex":"none";
-  modeHint.textContent=admin?"Admin mode: Blocks View mein kisi mahine ke block par tap = 500 jama / wapas. Naam par tap = detail / naam edit / delete.":"View mode: poora record sab ko show hai. Entry karni ho to upar se 🔐 Admin Login karein (ID: admin · Password: admin123).";
+  modeHint.textContent=admin?"Admin mode: Blocks View mein mahine ke block par tap = 500 jama / wapas. Har card par 🗑 Remove button se banda list se remove hota hai (2 dafa tap = confirm). Naam par tap = detail / naam edit.":"View mode: poora record sab ko show hai. Entry karni ho to upar se 🔐 Admin Login karein (ID: admin · Password: admin123).";
   modeHint3.textContent=modeHint.textContent;
   render();
 }
@@ -285,8 +304,8 @@ doLogin.onclick=()=>{ const id=(loginId.value||"").trim().toLowerCase(),pw=login
 doLogout.onclick=()=>setSession(null);
 /* ===== BACKUP / RESTORE ===== */
 function downloadFile(name,content,type){ const b=new Blob([content],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},400); }
-dlBackup.onclick=()=>{ if(!isAdmin())return; const data={app:"Fund Book",year:2026,monthly_amount:500,yearly_target_per_member:6000,exported_at:new Date().toISOString(),members:members.map(m=>({id:m.id,name:m.name,paid:m.paid,total:m.paid.filter(Boolean).length*500}))}; downloadFile("fund-book-2026-backup.json",JSON.stringify(data,null,2),"application/json"); alert("✅ Backup file download ho gayi: fund-book-2026-backup.json\nIs file ko WhatsApp / Google Drive mein mehfooz rakhein — yahi Restore ke kaam ayegi."); };
-dlCsv.onclick=()=>{ if(!isAdmin())return; const men=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; const rows=[["No","Name",...men,"Total","Due"],...members.map(m=>[m.id,m.name,...m.paid.map(p=>p?500:""),m.paid.filter(Boolean).length*500,6000-m.paid.filter(Boolean).length*500])]; const csv="﻿"+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n"); downloadFile("fund-book-2026-list.csv",csv,"text/csv"); };
+dlBackup.onclick=()=>{ if(!isAdmin())return; const data={app:"Fund Book",year:DB.year,monthly_amount:500,yearly_target_per_member:6000,exported_at:new Date().toISOString(),members:members.map(m=>({id:m.id,name:m.name,paid:m.paid,total:m.paid.filter(Boolean).length*500}))}; downloadFile("fund-book-"+DB.year+"-backup.json",JSON.stringify(data,null,2),"application/json"); alert("✅ Backup file download ho gayi: fund-book-"+DB.year+"-backup.json\nIs file ko WhatsApp / Google Drive mein mehfooz rakhein — yahi Restore ke kaam ayegi."); };
+dlCsv.onclick=()=>{ if(!isAdmin())return; const men=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; const rows=[["No","Name",...men,"Total","Due"],...members.map(m=>[m.id,m.name,...m.paid.map(p=>p?500:""),m.paid.filter(Boolean).length*500,6000-m.paid.filter(Boolean).length*500])]; const csv="﻿"+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n"); downloadFile("fund-book-"+DB.year+"-list.csv",csv,"text/csv"); };
 restoreFile.onchange=()=>{ if(!isAdmin())return; const f=restoreFile.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); const list=d.members||d; if(!Array.isArray(list)||!list.length||!list[0].paid) throw 0; if(!confirm("Is backup se maujooda data badal jayega. Restore karein?")) return; members=list.map(m=>({id:m.id,name:m.name,paid:m.paid})); save(); render(); showPage(1); alert("✅ Backup restore ho gaya — "+members.length+" members ka data load ho gaya."); }catch(e){ alert("❌ Ye file sahi backup nahi hai. Wohi JSON file chunein jo Backup Download se mili thi."); } restoreFile.value=""; }; r.readAsText(f); };
 /* BOOK FLOW */
 function showPage(n){
@@ -294,7 +313,8 @@ function showPage(n){
   coverView.classList.toggle("hidden",n!==0);
   render();
 }
-bookCover.onclick=()=>{ bookCover.classList.add("opening"); setTimeout(()=>{ bookCover.classList.remove("opening"); showPage(1); },650); };
+bookCover.onclick=()=>setYear(2026,bookCover);
+bookCover27.onclick=()=>setYear(2027,bookCover27);
 toCover1.onclick=()=>showPage(0);
 toPage2.onclick=()=>showPage(2);
 backPage1.onclick=()=>showPage(1);
@@ -304,7 +324,7 @@ closeBook.onclick=()=>showPage(0);
 /* TABLES — reference image jaisi */
 function buildBlocks(list){
   return list.map(m=>{ const tot=m.paid.filter(Boolean).length*500; const mine=session&&session.role==="member"&&session.memberId===m.id;
-    return `<div class="mcard ${mine?"mine":""}"><div class="mhead"><span class="nm" onclick="showMember(${m.id})"><span class="no">${m.id}</span>${m.name}${mine?" ★":""}</span><span><span class="pill t">جمع ${tot}</span> <span class="pill d">بقایا ${6000-tot}</span></span></div><div class="mgrid">${m.paid.map((p,i)=>`<div class="mblock ${p?"paid":""} ${isAdmin()?"":"locked"}" onclick="toggleCell(${m.id},${i})"><span class="mn">${MONTHS[i]}</span><span class="amt">${p?"500 ✓":"—"}</span></div>`).join("")}</div></div>` }).join("");
+    return `<div class="mcard ${mine?"mine":""}"><div class="mhead"><span class="nm" onclick="showMember(${m.id})"><span class="no">${m.id}</span>${m.name}${mine?" ★":""}</span><span style="display:flex;gap:5px;align-items:center;flex-wrap:wrap"><span class="pill t">جمع ${tot}</span> <span class="pill d">بقایا ${6000-tot}</span>${isAdmin()?` <button class="btn danger" style="padding:5px 11px;font-size:11.5px" onclick="askRemove(this,${m.id})">🗑 Remove</button>`:""}</span></div><div class="mgrid">${m.paid.map((p,i)=>`<div class="mblock ${p?"paid":""} ${isAdmin()?"":"locked"}" onclick="toggleCell(${m.id},${i})"><span class="mn">${MONTHS[i]}</span><span class="amt">${p?"500 ✓":"—"}</span></div>`).join("")}</div></div>` }).join("");
 }
 function setView(page,which){
   const blocks=document.getElementById("blocks"+page), fit=document.getElementById("fitWrap"+page);
@@ -327,10 +347,21 @@ function render(){
   blocks2.innerHTML=buildBlocks(members.filter(m=>m.id>27));
   const c=members.reduce((s,m)=>s+m.paid.filter(Boolean).length*500,0);
   stMembers.textContent=members.length; stCollected.textContent=fmt(c); stDue.textContent=fmt(members.length*6000-c); stTarget.textContent=fmt(members.length*6000);
+  hPage1.textContent="فنڈ لسٹ "+DB.year+" - فائنل لسٹ";
+  hPage2.textContent="فنڈ لسٹ "+DB.year+" - فائنل لسٹ - حصہ دوم";
+  hPage3.textContent="کل خلاصہ — "+DB.year;
+  meta26.textContent=DB.years[2026].length+" Members • 500 / Month • 6000 / Year";
+  const c27=DB.years[2027].reduce((s,m)=>s+m.paid.filter(Boolean).length*500,0);
+  meta27.textContent=DB.years[2027].length+" Members • Jama ab tak: Rs "+c27.toLocaleString("en-PK");
 }
 window.toggleCell=(id,i)=>{ if(!isAdmin()){ alert("👁 Ye View Mode hai — record sab ko sirf show hota hai.\nEntry ke liye upar 🔐 Admin Login karein.\nAdmin ID: admin · Password: admin123"); return; } const m=members.find(x=>x.id===id); m.paid[i]=!m.paid[i]; save(); render(); };
+window.askRemove=(btn,id)=>{ if(!isAdmin())return;
+  if(btn.dataset.armed){ members=members.filter(x=>x.id!==id); save(); render(); alert("✅ Member list se remove ho gaya ("+DB.year+" ki list se)."); return; }
+  btn.dataset.armed="1"; const old=btn.textContent; btn.textContent="❗ Pakka remove? Ek dafa aur tap karo"; btn.style.background="#b42318"; btn.style.color="#fff";
+  setTimeout(()=>{ if(btn.isConnected){ delete btn.dataset.armed; btn.textContent=old; btn.style.background=""; btn.style.color=""; } },4000);
+};
 let currentMemberId=null;
-window.showMember=(id)=>{ currentMemberId=id; const m=members.find(x=>x.id===id); const tot=m.paid.filter(Boolean).length*500; mName.textContent=m.name; mSub.textContent="Member No. "+m.id+" • 2026"; mTotal.textContent=fmt(tot); mDue.textContent=fmt(6000-tot); mMonths.innerHTML=MONTHS.map((mn,i)=>`<span class="chip ${m.paid[i]?"on":""}">${mn} ${m.paid[i]?"✓ 500":"—"}</span>`).join(""); adminActions.style.display=isAdmin()?"block":"none"; if(isAdmin()){ kbBuf.E=m.name; kbRender("E"); } modal.classList.remove("hidden"); };
+window.showMember=(id)=>{ currentMemberId=id; const m=members.find(x=>x.id===id); const tot=m.paid.filter(Boolean).length*500; mName.textContent=m.name; mSub.textContent="Member No. "+m.id+" • "+DB.year; mTotal.textContent=fmt(tot); mDue.textContent=fmt(6000-tot); mMonths.innerHTML=MONTHS.map((mn,i)=>`<span class="chip ${m.paid[i]?"on":""}">${mn} ${m.paid[i]?"✓ 500":"—"}</span>`).join(""); adminActions.style.display=isAdmin()?"block":"none"; if(isAdmin()){ kbBuf.E=m.name; kbRender("E"); } modal.classList.remove("hidden"); };
 modal.addEventListener("click",e=>{ if(e.target===modal) modal.classList.add("hidden"); });
 saveNameBtn.onclick=()=>{ if(!isAdmin())return; const v=kbBuf.E.trim(); if(!v) return alert("Naam khali hai — pehle Urdu keyboard se naam banayein."); const m=members.find(x=>x.id===currentMemberId); if(m){ m.name=v; save(); render(); modal.classList.add("hidden"); alert("✅ Naam save ho gaya: "+v); } };
 deleteMemberBtn.onclick=()=>{ if(!isAdmin())return; const m=members.find(x=>x.id===currentMemberId); if(confirm(m.name+" ko delete kar dein?")){ members=members.filter(x=>x.id!==m.id); save(); modal.classList.add("hidden"); render(); } };
